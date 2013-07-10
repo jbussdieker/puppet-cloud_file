@@ -1,0 +1,2 @@
+class cloud_file {
+}
