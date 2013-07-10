@@ -6,14 +6,10 @@ http://forge.puppetlabs.com/jbussdieker/cloud_file
 
 ## Parameters
 
-* source:
- Specify the source url of the cloud file.
-
-* access_key_id:
- The AWS access key to connect to S3.
-
-* secret_access_key:
- The AWS secret access key to connect to S3.
+* ensure: present, absent. default present.
+* source: Specify the source url of the cloud file ex (bucket_name/path/to/file).
+* access_key_id: The AWS access key to connect to S3.
+* secret_access_key: The AWS secret access key to connect to S3.
 
 ## Usage
 
