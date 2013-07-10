@@ -2,6 +2,8 @@
 
 This module manages files hosted on cloud providers. Currently only S3 is supported.
 
+http://forge.puppetlabs.com/jbussdieker/cloud_file
+
 ## Parameters
 
 * source:
