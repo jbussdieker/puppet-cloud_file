@@ -17,11 +17,9 @@ http://forge.puppetlabs.com/jbussdieker/cloud_file
 
 ## Usage
 
-`````
-cloud_file {'/tmp/file':
-  ensure            => present,
-  source            => 'some_bucket/path/to/file',
-  access_key_id     => '',
-  secret_access_key => '',
-}
-`````
+    cloud_file {'/tmp/file':
+      ensure            => present,
+      source            => 'some_bucket/path/to/file',
+      access_key_id     => '',
+      secret_access_key => '',
+    }
