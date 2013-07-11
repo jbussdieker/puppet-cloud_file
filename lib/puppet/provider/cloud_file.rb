@@ -1,5 +1,5 @@
 class Puppet::Provider::CloudFile < Puppet::Provider
   def exists?
-    File.exists? @resource.value(:path)
+    File.exists? resource[:path]
   end
 end
