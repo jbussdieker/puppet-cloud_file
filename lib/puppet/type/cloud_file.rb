@@ -2,6 +2,8 @@ Puppet::Type.newtype(:cloud_file) do
   desc "A cloud based file"
 
   ensurable do
+    defaultto :present
+
     newvalue :present do
       provider.create
     end
