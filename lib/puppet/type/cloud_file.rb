@@ -10,9 +10,17 @@ Puppet::Type.newtype(:cloud_file) do
       provider.delete
     end
 
+    newvalue :latest do
+      provider.create
+    end
+
     def retrieve
       if provider.exists?
-        :present
+        if value == :latest and provider.latest?
+          :latest
+        else
+          :present
+        end
       else
         :absent
       end

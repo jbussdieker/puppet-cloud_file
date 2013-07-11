@@ -6,6 +6,14 @@ Puppet::Type.type(:cloud_file).provide(:s3, :parent => Puppet::Provider::CloudFi
     write(payload)
   end
 
+  def delete
+    File.delete(resource[:path])
+  end
+
+  def latest?
+    File.stat(resource[:path]).mtime > object.last_modified
+  end
+
   private
 
   def s3

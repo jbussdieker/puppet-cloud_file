@@ -6,7 +6,7 @@ http://forge.puppetlabs.com/jbussdieker/cloud_file
 
 ## Parameters
 
-* ensure: present, absent. default present.
+* ensure: present, absent, latest. default present.
 * path: The local path for the destination file.
 * source: Specify the source url of the cloud file ex (bucket_name/path/to/file).
 * access_key_id: The AWS access key to connect to S3.
