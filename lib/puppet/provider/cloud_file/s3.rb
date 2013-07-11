@@ -3,9 +3,7 @@ require File.join(File.dirname(__FILE__), '..', 'cloud_file')
 
 Puppet::Type.type(:cloud_file).provide(:s3, :parent => Puppet::Provider::CloudFile) do
   def create
-    File.open(resource[:path], 'w') do |f|
-      f.write(object.read)
-    end
+    write(payload)
   end
 
   private
@@ -17,13 +15,48 @@ Puppet::Type.type(:cloud_file).provide(:s3, :parent => Puppet::Provider::CloudFi
     )
   end
 
+  def bucket_name
+    resource[:source].split("/").first
+  end
+
+  def source_path
+    resource[:source].split("/")[1..-1].join("/")
+  end
+
   def bucket
-    bucket = resource[:source].split("/").first
-    s3.buckets[bucket]
+    s3.buckets[bucket_name]
   end
 
   def object
-    path = resource[:source].split("/")[1..-1].join("/")
-    bucket.objects[path]
+    bucket.objects[source_path]
+  end
+
+  def write(data)
+    begin
+      f = File.open(resource[:path], 'w')
+    rescue Errno::ENOENT => detail
+      raise Puppet::Error, detail.message
+    rescue => detail
+      p detail
+    end
+
+    f.write(data)
+    f.close
+  end
+
+  def payload
+    begin
+      object.read
+    rescue AWS::S3::Errors::InvalidAccessKeyId
+      raise Puppet::Error, "Invalid Access Key ID"
+    rescue AWS::S3::Errors::SignatureDoesNotMatch
+      raise Puppet::Error, "Invalid Access Key ID and/or Secret Access Key"
+    rescue AWS::S3::Errors::NoSuchBucket
+      raise Puppet::Error, "Bucket Not Found (#{bucket_name})"
+    rescue AWS::S3::Errors::NoSuchKey
+      raise Puppet::Error, "Remote File Not Found (#{source_path})"
+    rescue => detail
+      p detail
+    end
   end
 end
