@@ -35,7 +35,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  puppet
+  puppet (>= 2.7)
   puppetlabs_spec_helper
   rake
   rspec
