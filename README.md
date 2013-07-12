@@ -1,5 +1,7 @@
 # Cloud File Module
 
+[![Build Status](https://travis-ci.org/jbussdieker/puppet-cloud_file.png?branch=master)](https://travis-ci.org/jbussdieker/puppet-cloud_file)
+
 This module manages files hosted on cloud providers. Currently only S3 is supported.
 
 http://forge.puppetlabs.com/jbussdieker/cloud_file
