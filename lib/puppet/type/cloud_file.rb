@@ -40,9 +40,11 @@ Puppet::Type.newtype(:cloud_file) do
 
   newparam(:access_key_id) do
     desc "The AWS access key to connect to S3."
+    defaultto undef
   end
 
   newparam(:secret_access_key) do
     desc "The AWS secret access key to connect to S3."
+    defaultto undef
   end
 end

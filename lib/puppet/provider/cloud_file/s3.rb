@@ -16,11 +16,16 @@ Puppet::Type.type(:cloud_file).provide(:s3, :parent => Puppet::Provider::CloudFi
 
   private
 
+  def configure_aws
+    if resource[:access_key_id] && resource[:secret_access_key]
+      AWS.config(:access_key_id => resource[:access_key_id],
+                 :secret_access_key => resource[:secret_access_key])
+    end
+  end
+
   def s3
-    AWS::S3.new(
-      :access_key_id => resource[:access_key_id],
-      :secret_access_key => resource[:secret_access_key]
-    )
+    configure_aws
+    AWS::S3.new
   end
 
   def bucket_name
