@@ -14,13 +14,23 @@ http://forge.puppetlabs.com/jbussdieker/cloud_file
 * `access_key_id`: The AWS access key to connect to S3. (optional)
 * `secret_access_key`: The AWS secret access key to connect to S3. (optional)
 
-If `access_key_id` and `secret_access_key` are left blank, the credentials will attempt to be retrieved via the methods outlined [aws-sdk docs](http://docs.aws.amazon.com/AWSSdkDocsRuby/latest/DeveloperGuide/ruby-dg-setup.html#set-up-creds).
+__Please note:__ _This module requires the `aws-sdk` gem to be installed prior to use._
 
 ## Usage
 
-    cloud_file {'/tmp/file':
-      ensure            => present,
-      source            => 'some_bucket/path/to/file',
-      access_key_id     => '',
-      secret_access_key => '',
+    file { '/opt/scripts':
+      ensure => directory,
+      owner  => root,
+      group  => root
     }
+
+    cloud_file {'/opt/scripts/script.sh':
+      ensure            => present,
+      source            => 'bucket/path/to/script.sh',
+      access_key_id     => 'EXAMPLE_ACCESS_KEY_ID',
+      secret_access_key => 'EXAMPLE_SECRET_ACCESS_KEY',
+    }
+
+    # If you omit the access_key_id and secret_access_key, the S3 client will
+    # attempt to authenticate automatically by one of the methods described
+    # here: http://docs.aws.amazon.com/AWSSdkDocsRuby/latest/DeveloperGuide/prog-basics-creds.html
