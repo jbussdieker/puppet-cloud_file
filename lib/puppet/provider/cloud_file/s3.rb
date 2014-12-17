@@ -17,7 +17,7 @@ Puppet::Type.type(:cloud_file).provide(:s3, :parent => Puppet::Provider::CloudFi
   private
 
   def configure_aws
-    if resource[:access_key_id] && resource[:secret_access_key]
+    if resource[:access_key_id] != :undef && resource[:secret_access_key] != :undef
       AWS.config(:access_key_id => resource[:access_key_id],
                  :secret_access_key => resource[:secret_access_key])
     end

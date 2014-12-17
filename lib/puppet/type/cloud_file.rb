@@ -1,5 +1,5 @@
 Puppet::Type.newtype(:cloud_file) do
-  desc "A cloud based file"
+  desc 'A cloud based file'
 
   ensurable do
     defaultto :present
@@ -30,21 +30,21 @@ Puppet::Type.newtype(:cloud_file) do
   end
 
   newparam(:path) do
-    desc "The local path for the destination file."
+    desc 'The local path for the destination file.'
     isnamevar
   end
 
   newparam(:source) do
-    desc "Specify the source url of the cloud file ex (bucket_name/path/to/file)."
+    desc 'The source of the cloud file (e.g. bucket_name/path/to/file).'
   end
 
   newparam(:access_key_id) do
-    desc "The AWS access key to connect to S3."
-    defaultto undef
+    desc 'The AWS access key to connect to S3.'
+    defaultto :undef
   end
 
   newparam(:secret_access_key) do
-    desc "The AWS secret access key to connect to S3."
-    defaultto undef
+    desc 'The AWS secret access key to connect to S3.'
+    defaultto :undef
   end
 end
