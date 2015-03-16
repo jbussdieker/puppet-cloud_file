@@ -223,6 +223,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  aws-sdk
   beaker-rspec
   facter
   puppet

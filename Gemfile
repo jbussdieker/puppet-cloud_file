@@ -1,5 +1,7 @@
 source 'https://rubygems.org'
 
+gem 'aws-sdk'
+
 group :development, :unit_tests do
   gem 'rspec-puppet'
   gem 'simplecov', :require => false
