@@ -1,4 +1,2 @@
-/pkg
-.bundle
-vendor
-Gemfile.lock
+spec/fixtures
+pkg/
