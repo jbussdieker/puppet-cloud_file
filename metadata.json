@@ -1,0 +1,30 @@
+{
+  "name": "jbussdieker-cloud_file",
+  "version": "0.0.7",
+  "author": "Joshua Bussdieker",
+  "summary": "Cloud File Module",
+  "license": "MIT",
+  "source": "http://github.com/jbussdieker/puppet-cloud_file",
+  "project_page": "http://github.com/jbussdieker/puppet-cloud_file",
+  "issues_url": "https://github.com/jbussdieker/puppet-cloud_file/issues",
+  "description": "This module manages files hosted on cloud providers. Currently only S3 is supported.",
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "Ubuntu",
+      "operatingsystemrelease": [ "14.04" ]
+    }
+  ],
+  "requirements": [
+    {
+      "name": "puppet",
+      "version_requirement": "3.x"
+    }
+  ],
+  "dependencies": [
+  ],
+  "tags": [
+    "file",
+    "cloud",
+    "s3"
+  ]
+}
