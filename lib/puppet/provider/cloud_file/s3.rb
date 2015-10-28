@@ -4,7 +4,7 @@ require File.join(File.dirname(__FILE__), '..', 'cloud_file')
 
 Puppet::Type.type(:cloud_file).provide(:s3, :parent => Puppet::Provider::CloudFile) do
   def create
-    write(payload)
+    write_object
   end
 
   def delete
@@ -13,7 +13,7 @@ Puppet::Type.type(:cloud_file).provide(:s3, :parent => Puppet::Provider::CloudFi
 
   def latest?
     begin
-      Digest::MD5.file(resource[:path]).hexdigest != object_summary.etag
+      Digest::MD5.file(resource[:path]).hexdigest == object_summary.etag
     rescue Aws::S3::Errors::InvalidAccessKeyId
       raise Puppet::Error, "Invalid Access Key ID"
     rescue Aws::S3::Errors::SignatureDoesNotMatch
@@ -56,26 +56,11 @@ Puppet::Type.type(:cloud_file).provide(:s3, :parent => Puppet::Provider::CloudFi
     s3.head_object(:bucket => bucket_name, :key => source_path)
   end
 
-  def object
-    s3.get_object(:bucket => bucket_name, :key=> source_path)
-  end
-
-  def write(data)
+  def write_object
     begin
-      f = File.open(resource[:path], 'w')
-    rescue Errno::ENOENT => detail
-      raise Puppet::Error, detail.message
-    rescue => detail
-      p detail
-    end
-
-    f.write(data)
-    f.close
-  end
-
-  def payload
-    begin
-      object.body
+      s3.get_object(:response_target => resource[:path], 
+                    :bucket => bucket_name, 
+                    :key=> source_path)
     rescue Aws::S3::Errors::InvalidAccessKeyId
       raise Puppet::Error, "Invalid Access Key ID"
     rescue Aws::S3::Errors::SignatureDoesNotMatch
