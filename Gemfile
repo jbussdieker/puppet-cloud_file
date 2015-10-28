@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'aws-sdk'
+gem 'aws-sdk-core'
 
 group :development, :unit_tests do
   gem 'rspec-puppet'

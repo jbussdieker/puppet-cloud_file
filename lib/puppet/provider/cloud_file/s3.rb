@@ -1,4 +1,4 @@
-require 'aws-sdk'
+require 'aws-sdk-core'
 require 'digest/md5'
 require File.join(File.dirname(__FILE__), '..', 'cloud_file')
 
@@ -12,21 +12,33 @@ Puppet::Type.type(:cloud_file).provide(:s3, :parent => Puppet::Provider::CloudFi
   end
 
   def latest?
-    Digest::MD5.file(resource[:path]).hexdigest != object.etag
+    begin
+      Digest::MD5.file(resource[:path]).hexdigest != object_summary.etag
+    rescue Aws::S3::Errors::InvalidAccessKeyId
+      raise Puppet::Error, "Invalid Access Key ID"
+    rescue Aws::S3::Errors::SignatureDoesNotMatch
+      raise Puppet::Error, "Invalid Access Key ID and/or Secret Access Key"
+    rescue Aws::S3::Errors::NoSuchBucket
+      raise Puppet::Error, "Bucket Not Found (#{bucket_name})"
+    rescue Aws::S3::Errors::NoSuchKey
+      raise Puppet::Error, "Remote File Not Found (#{source_path})"
+    rescue => detail
+      p detail
+    end
   end
 
   private
 
   def configure_aws
     if resource[:access_key_id] != :undef && resource[:secret_access_key] != :undef
-      AWS.config(:access_key_id => resource[:access_key_id],
+      Aws.config(:access_key_id => resource[:access_key_id],
                  :secret_access_key => resource[:secret_access_key])
     end
   end
 
   def s3
     configure_aws
-    AWS::S3.new
+    Aws::S3::Client.new()
   end
 
   def bucket_name
@@ -37,12 +49,12 @@ Puppet::Type.type(:cloud_file).provide(:s3, :parent => Puppet::Provider::CloudFi
     resource[:source].split("/")[1..-1].join("/")
   end
 
-  def bucket
-    s3.buckets[bucket_name]
+  def object_summary
+    s3.head_object(:bucket => bucket_name, :key => source_path)
   end
 
   def object
-    bucket.objects[source_path]
+    s3.get_object(:bucket => bucket_name, :key=> source_path)
   end
 
   def write(data)
@@ -60,14 +72,14 @@ Puppet::Type.type(:cloud_file).provide(:s3, :parent => Puppet::Provider::CloudFi
 
   def payload
     begin
-      object.read
-    rescue AWS::S3::Errors::InvalidAccessKeyId
+      object.body
+    rescue Aws::S3::Errors::InvalidAccessKeyId
       raise Puppet::Error, "Invalid Access Key ID"
-    rescue AWS::S3::Errors::SignatureDoesNotMatch
+    rescue Aws::S3::Errors::SignatureDoesNotMatch
       raise Puppet::Error, "Invalid Access Key ID and/or Secret Access Key"
-    rescue AWS::S3::Errors::NoSuchBucket
+    rescue Aws::S3::Errors::NoSuchBucket
       raise Puppet::Error, "Bucket Not Found (#{bucket_name})"
-    rescue AWS::S3::Errors::NoSuchKey
+    rescue Aws::S3::Errors::NoSuchKey
       raise Puppet::Error, "Remote File Not Found (#{source_path})"
     rescue => detail
       p detail
