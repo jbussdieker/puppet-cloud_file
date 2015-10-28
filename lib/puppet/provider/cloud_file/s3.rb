@@ -1,8 +1,12 @@
 require 'aws-sdk-core'
 require 'digest/md5'
-require File.join(File.dirname(__FILE__), '..', 'cloud_file')
 
-Puppet::Type.type(:cloud_file).provide(:s3, :parent => Puppet::Provider::CloudFile) do
+Puppet::Type.type(:cloud_file).provide(:s3) do
+
+  def exists?
+    File.exists?(resource[:path])
+  end
+
   def create
     write_object
   end
@@ -11,9 +15,13 @@ Puppet::Type.type(:cloud_file).provide(:s3, :parent => Puppet::Provider::CloudFi
     File.delete(resource[:path])
   end
 
+  def destroy
+    delete
+  end
+
   def latest?
     begin
-      Digest::MD5.file(resource[:path]).hexdigest == object_summary.etag
+      Digest::MD5.file(resource[:path]).hexdigest == object_summary.etag.tr('"', '')
     rescue Aws::S3::Errors::InvalidAccessKeyId
       raise Puppet::Error, "Invalid Access Key ID"
     rescue Aws::S3::Errors::SignatureDoesNotMatch
@@ -31,11 +39,11 @@ Puppet::Type.type(:cloud_file).provide(:s3, :parent => Puppet::Provider::CloudFi
 
   def configure_aws
     if resource[:access_key_id] != :undef && resource[:secret_access_key] != :undef
-      Aws.config(:access_key_id => resource[:access_key_id],
+      Aws.config.update(:access_key_id => resource[:access_key_id],
                  :secret_access_key => resource[:secret_access_key],
                  :region => resource[:region])
     else
-      Aws.config(:regions => resource[:region])
+      Aws.config.update(:region => resource[:region])
     end
   end
 
@@ -70,7 +78,7 @@ Puppet::Type.type(:cloud_file).provide(:s3, :parent => Puppet::Provider::CloudFi
     rescue Aws::S3::Errors::NoSuchKey
       raise Puppet::Error, "Remote File Not Found (#{source_path})"
     rescue => e
-      raise Puppet::Error, e
+      raise e
     end
   end
 end

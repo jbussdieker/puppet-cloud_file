@@ -2,8 +2,6 @@ Puppet::Type.newtype(:cloud_file) do
   desc 'A cloud based file'
 
   ensurable do
-    defaultto :present
-
     newvalue :present do
       provider.create
     end
@@ -36,6 +34,11 @@ Puppet::Type.newtype(:cloud_file) do
 
   newparam(:source) do
     desc 'The source of the cloud file (e.g. bucket_name/path/to/file).'
+    validate do |v|
+      unless v.include? "/"
+        raise ArgumentError, "%s is not a valid source path, please include bucket_name/path/to/file" % value
+      end
+    end
   end
 
   newparam(:access_key_id) do
