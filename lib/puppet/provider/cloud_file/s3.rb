@@ -1,7 +1,8 @@
 require 'aws-sdk-core'
 require 'digest/md5'
+require File.join(File.dirname(__FILE__), '..', 'cloud_file')
 
-Puppet::Type.type(:cloud_file).provide(:s3) do
+Puppet::Type.type(:cloud_file).provide(:s3, :parent => Puppet::Provider::CloudFile) do
 
   def exists?
     File.exists?(resource[:path])
