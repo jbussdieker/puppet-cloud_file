@@ -22,8 +22,8 @@ Puppet::Type.type(:cloud_file).provide(:s3, :parent => Puppet::Provider::CloudFi
       raise Puppet::Error, "Bucket Not Found (#{bucket_name})"
     rescue Aws::S3::Errors::NoSuchKey
       raise Puppet::Error, "Remote File Not Found (#{source_path})"
-    rescue => detail
-      p detail
+    rescue => e
+      raise Puppet::Error, e
     end
   end
 
@@ -32,7 +32,10 @@ Puppet::Type.type(:cloud_file).provide(:s3, :parent => Puppet::Provider::CloudFi
   def configure_aws
     if resource[:access_key_id] != :undef && resource[:secret_access_key] != :undef
       Aws.config(:access_key_id => resource[:access_key_id],
-                 :secret_access_key => resource[:secret_access_key])
+                 :secret_access_key => resource[:secret_access_key],
+                 :region => resource[:region])
+    else
+      Aws.config(:regions => resource[:region])
     end
   end
 
@@ -81,8 +84,8 @@ Puppet::Type.type(:cloud_file).provide(:s3, :parent => Puppet::Provider::CloudFi
       raise Puppet::Error, "Bucket Not Found (#{bucket_name})"
     rescue Aws::S3::Errors::NoSuchKey
       raise Puppet::Error, "Remote File Not Found (#{source_path})"
-    rescue => detail
-      p detail
+    rescue => e
+      raise Puppet::Error, e
     end
   end
 end

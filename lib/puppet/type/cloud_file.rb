@@ -47,4 +47,9 @@ Puppet::Type.newtype(:cloud_file) do
     desc 'The AWS secret access key to connect to S3.'
     defaultto :undef
   end
+
+  newparam(:region) do
+    desc 'The region bucket is in'
+    defaultto 'us-east-1'
+  end
 end

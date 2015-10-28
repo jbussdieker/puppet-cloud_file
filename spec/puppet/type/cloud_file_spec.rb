@@ -50,4 +50,13 @@ describe Puppet::Type.type(:cloud_file) do
       described_class.new(:path => 'foo')[:secret_access_key].should eq(:undef)
     end
   end
+  describe "region" do
+    it "should support strings as a value" do
+      expect { described_class.new(:path => 'foo', :region => 'REGION') }.to_not raise_error
+    end
+
+    it "should have us-east-1 as a default value" do
+      described_class.new(:path => 'foo')[:region].should eq('us-east-1')
+    end
+  end
 end
