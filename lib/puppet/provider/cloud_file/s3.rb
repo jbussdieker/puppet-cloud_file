@@ -1,4 +1,5 @@
 require 'aws-sdk'
+require 'digest/md5'
 require File.join(File.dirname(__FILE__), '..', 'cloud_file')
 
 Puppet::Type.type(:cloud_file).provide(:s3, :parent => Puppet::Provider::CloudFile) do
@@ -11,7 +12,7 @@ Puppet::Type.type(:cloud_file).provide(:s3, :parent => Puppet::Provider::CloudFi
   end
 
   def latest?
-    File.stat(resource[:path]).mtime > object.last_modified
+    Digest::MD5.file(resource[:path]).hexdigest != object.etag
   end
 
   private
