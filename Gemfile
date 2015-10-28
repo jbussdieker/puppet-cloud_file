@@ -9,14 +9,14 @@ group :development, :unit_tests do
 end
 
 group :system_tests do
-  gem 'beaker-rspec', :require => false
+  gem 'beaker-rspec', '4.0.0', :require => false
   gem 'serverspec', :require => false
 end
 
 if facterversion = ENV['FACTER_GEM_VERSION']
   gem 'facter', facterversion, :require => false
 else
-  gem 'facter', :require => false
+  gem 'facter', '1.7.6', :require => false
 end
 
 if puppetversion = ENV['PUPPET_GEM_VERSION']
